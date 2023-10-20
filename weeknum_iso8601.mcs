@@ -1,0 +1,99 @@
+// Source:  https://forums.ni.com/t5/Example-Code/Calculating-week-number-according-to-ISO8601-using-LabWindows/ta-p/3495098
+
+function IsLeapYear( $year )
+{
+  return IsAnyTrue( IsAllTrue( mod( $year, 4 ) == 0, !( mod( $year, 100 ) == 0 ) ), mod( $year, 400 ) == 0 );
+}
+
+function WeekNumIso8601( $day, $month, $year )
+{
+  @var  $YY, $C, $G, $I, $J, $DayOfYearNumber, $Jan1Weekday, $Weekday, $YearNumber;
+  @var  $LeapYear = 0, $precLeapYear = 0, $WeekNumber = 0;
+  @var  $Mnth = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
+
+  // 1. Find if Y is LeapYear
+  if ( IsLeapYear( $year ) )
+  {
+    $LeapYear = 1;
+  }
+
+  // 2. Find if Y-1 is LeapYear
+  if ( IsLeapYear( $year - 1 ) )
+  {
+    $precLeapYear = 1;
+  }
+
+  // 3. Find the DayOfYearNumber for Y M D
+  $DayOfYearNumber = ( $day ) + ( $Mnth[ $month - 1 ] );
+  if ( IsAllTrue( $LeapYear > 0 , $month > 2 ) )
+  {
+    $DayOfYearNumber++;
+  }
+
+  // 4. Find the Jan1Weekday for Y (Monday=1, Sunday=7)
+  $YY = mod( $year - 1, 100 );
+  $C = ( $year - 1 ) - $YY;
+  $G = $YY + ( $YY / 4 );
+  $I = mod( $C / 100, 4 );
+  $Jan1Weekday = 1 + mod( ( $I * 5 ) + $G, 7 );
+
+  // 5. Find the Weekday for Y M D
+  $I = $DayOfYearNumber + ( $Jan1Weekday - 1 );
+  $Weekday = 1 + mod( $I - 1, 7 );
+
+  if ( $Weekday == 0 )
+  {
+    $Weekday = 7;
+  }
+
+  // 6. Find if Y M D falls in YearNumber Y-1, WeekNumber 52 or 53
+  if ( IsAllTrue( $DayOfYearNumber <= ( 8 - $Jan1Weekday ), $Jan1Weekday > 4 ) )
+  {
+    $YearNumber = $year - 1;
+   
+    if ( IsAnyTrue( $Jan1Weekday == 5, IsAllTrue( $Jan1Weekday == 6, $precLeapYear == 1 ) ) )
+    {
+      $WeekNumber = 53;
+    }
+    else
+    {
+      $WeekNumber = 52;
+    }
+  }
+  else
+  {
+    $YearNumber = $year;
+  }
+
+  // 7. Find if Y M D falls in YearNumber Y+1, WeekNumber 1
+  if ( $YearNumber == $year )
+  {
+    if ( $LeapYear == 1 )
+    {
+      $I = 366;
+    }
+    else
+    {
+      $I = 365;
+    }
+    if ( ( $I - $DayOfYearNumber ) < ( 4 - $Weekday ) )
+    {
+      $YearNumber = $year + 1;
+      $WeekNumber = 1;
+    }
+  }
+
+  // 8. Find if Y M D falls in YearNumber Y, WeekNumber 1 through 53
+  if ( $YearNumber == $year )
+  {
+    $J = $DayOfYearNumber + ( 7 - $Weekday ) + ( $Jan1Weekday - 1 );
+    $WeekNumber = $J / 7;
+
+    if ( $Jan1Weekday > 4 )
+    {
+      $WeekNumber--;
+    }
+  }
+ 
+  return $WeekNumber;
+}

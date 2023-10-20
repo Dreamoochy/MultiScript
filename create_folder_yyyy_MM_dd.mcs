@@ -1,0 +1,5 @@
+@var $now  = GetTime();
+@var $date = FormatDate( "yyyy_MM_dd", $now );
+@var $dir  = GetSourcePath() ^ $date;
+
+MakeDir( $dir, "" );

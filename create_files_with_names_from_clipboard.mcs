@@ -1,0 +1,16 @@
+@var $dir = GetSourcePath();
+@var $sel = StrLines2Array( GetClipboardText() );
+
+@var $c = arrayCount( $sel );
+@var $n;
+@var $f;
+
+for( $n = 0; $n < $c; $n++ )
+{
+  $f = $dir ^ "\\" ^ PathGetNamePart( $sel[ $n ], 1 );
+
+  if( FileExists( $f ) == 0 )
+  {
+    SaveStringToFile( $f, "" );
+  }
+}

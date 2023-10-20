@@ -1,0 +1,17 @@
+@var $src_path = GetSourcePath();
+@var $names = GetSourceItems();
+
+@var $count = arrayCount( $names );
+@var $i;
+
+for( $i = 0; $i < $count; $i++ )
+{
+  @var $file = $src_path ^ $names[ $i ];
+  @var $result = FileExists( $file );
+ 
+  if ( 1 == $result )
+  {
+    MC.Explorer.SetItemFocus ITEM="{$names[ $i ]}"
+    break;
+  }
+}

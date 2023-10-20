@@ -1,0 +1,14 @@
+@var $now = GetTime();
+@var $options[];
+
+arrayAdd( $options, FormatDate("dd-MM-yy" , $now) );
+arrayAdd( $options, FormatDate("dd-MM-yyyy" , $now) );
+arrayAdd( $options, FormatDate("yyyy_MM_dd" , $now) );
+arrayAdd( $options, FormatDate("ddd MMM yyyy" , $now) );
+
+@var $o = AskOption( "Make new dir: select date format", $options, 0 );
+if( $o > -1 )
+{
+  @var $path = GetSourcePath() ^ $options[$o];
+  MakeDir($path);
+}

@@ -1,0 +1,14 @@
+if ( GetSourcePath() == GetTargetPath() ) return;
+
+@var $sel_files = GetSourceSelectedPaths();
+@var $src_file;
+@var $lnk_file;
+@var $i;
+@var $files_count = arrayCount( $sel_files );
+
+for ( $i = 0; $i < $files_count; $i++ )
+{
+  $src_file = $sel_files[ $i ];
+  $lnk_file = GetTargetPath() ^ PathGetNamePart( $src_file );
+  MC.Utils.CreateLink LNKTYPE=1 LNKTRG="{$src_file}" LNKSRC="{$lnk_file}";
+}
