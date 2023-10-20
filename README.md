@@ -1,2 +1,2 @@
 # MultiScript
-Various scripts for MultiCommander file manager
+Various scripts for [Multi Commander](https://multicommander.com) file manager
