@@ -1,0 +1,32 @@
+@var $shortcut_name = AskText( "Enter shortcut name:", "", 0 );
+
+if ( 0 == StrLen( $shortcut_name ) )
+{
+  return;
+}
+
+//@var $url_name = GetClipboardText();
+@var $url_name = "";
+
+$url_name = AskText( "Enter shortcut URL:", $url_name, 0 );
+
+if ( 0 == StrLen( $url_name ) )
+{
+  return;
+}
+
+$shortcut_name = GetSourcePath() ^ $shortcut_name + ".url";
+$url_name = "URL=" + $url_name;
+
+@var $content[];
+
+arrayAdd( $content, "[InternetShortcut]" );
+arrayAdd( $content, $url_name );
+
+@var $result = SaveArray( $shortcut_name, $content, 0, 1 );
+
+if ( 0 == $result )
+{
+  MessageBox( "Error", "URL shortcut was not created!", 0 );
+}
+
